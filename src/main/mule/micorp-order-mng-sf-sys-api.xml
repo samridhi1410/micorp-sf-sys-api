@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    
+    <flow name="micorp-order-mng-sf-sys-api-main" doc:id="51e6e675-2766-4a9b-bb5e-f46525fec0ea">
+        <http:listener config-ref="micorp-order-mng-sf-sys-api-httpListenerConfig" path="/api/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:router config-ref="micorp-order-mng-sf-sys-api-config" />
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="micorp-order-mng-sf-sys-api-console">
+        <http:listener config-ref="micorp-order-mng-sf-sys-api-httpListenerConfig" path="/console/*">
+            <http:response statusCode="#[vars.httpStatus default 200]">
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:response>
+            <http:error-response statusCode="#[vars.httpStatus default 500]">
+                <http:body>#[payload]</http:body>
+                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+            </http:error-response>
+        </http:listener>
+        <apikit:console config-ref="micorp-order-mng-sf-sys-api-config" />
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="get:\customer:micorp-order-mng-sf-sys-api-config">
+		<logger level="INFO" doc:name="flowStarted" doc:id="51529122-b40a-475b-a1b9-30ced89bb2f0" message='#["Flow Started- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+		<flow-ref doc:name="getCustomer" doc:id="6a06bb25-389a-44bb-858c-026366d9001e" name="getCustomer" doc:description="This flow refrence refer the 'get' method of the customer endpoint. "/>
+		<logger level="INFO" doc:name="flowEnded" doc:id="d8f4f4b4-65b6-4e97-b933-d13af60f98a2" message='#["Flow Ended- " ++ flow.name]' doc:description="This will show the name of ending flow."/>
+    </flow>
+    <flow name="get:\item:micorp-order-mng-sf-sys-api-config">
+		<logger level="INFO" doc:name="flowStarted" doc:id="e9634054-4d4b-457a-a7e5-f20596ab3d14" message='#["Flow Started- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+		<flow-ref doc:name="getItem" doc:id="6fa962a1-ec52-4264-ab6c-00fc2fe2ca1c" name="getItem" doc:description="This flow refrence refer the 'get' method of the item endpoint. "/>
+		<logger level="INFO" doc:name="flowEnded" doc:id="594c275e-8549-4d3c-aa01-faae7d076181" message='#["Flow Ended- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+		<error-handler ref="global-error-handlerError_Handler" />
+    </flow>
+    <flow name="get:\order:micorp-order-mng-sf-sys-api-config">
+		<logger level="INFO" doc:name="flowStarted" doc:id="be20dff3-a913-4187-8f7d-7fa6aef30721" message='#["Flow Started- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+		<flow-ref doc:name="getOrder" doc:id="89553566-0935-4b6c-85df-c47543d22ff6" name="getOrder" doc:description="This flow refrence refer the 'get' method of the order endpoint. "/>
+		<logger level="INFO" doc:name="flowEnded" doc:id="71d4c37f-a4bb-4e36-ade0-321902aa8461" message='#["Flow Ended- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+    </flow>
+    <flow name="post:\customer:application\json:micorp-order-mng-sf-sys-api-config">
+		<logger level="INFO" doc:name="flowStarted" doc:id="565b7c76-4f96-4616-b65e-6c2822f840d5" message='#["Flow Started- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+		<flow-ref doc:name="addCustomer" doc:id="ca7be29a-093a-4a4d-b350-dcf67da26ea3" name="addCustomer" doc:description="This flow refrence refer the 'post' method of the customer endpoint. "/>
+		<logger level="INFO" doc:name="flowEnded" doc:id="da898d48-72dd-49d4-bba4-2c6d9945e7ec" message='#["Flow Ended- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+    </flow>
+	<flow name="post:\item:application\json:micorp-order-mng-sf-sys-api-config">
+		<logger level="INFO" doc:name="flowStarted" doc:id="77079ceb-d01e-4421-b624-518ddc50eb98" message='#["Flow Started- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+		<flow-ref doc:name="addItem" doc:id="00851e4e-fb6d-453f-9bc9-e638fbaf924b" name="addItem" doc:description="This flow refrence refer the 'post' method of the item endpoint. "/>
+		<logger level="INFO" doc:name="flowEnded" doc:id="641b81e9-3c55-4c8a-a8fa-a9bcbcb0fd03" message='#["Flow Ended- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+    </flow>
+    <flow name="post:\order:application\json:micorp-order-mng-sf-sys-api-config">
+		<logger level="INFO" doc:name="flowStarted" doc:id="4d0890b7-ade1-41e0-9401-c5b8612bf074" message='#["Flow Started- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+		<flow-ref doc:name="addOrder" doc:id="6b33c55f-1cf5-4fef-947c-65277ba27e83" name="addOrder" doc:description="This flow refrence refer the 'post' method of the order endpoint. "/>
+		<logger level="INFO" doc:name="flowEnded" doc:id="45410031-9f2e-4dd4-9398-aec9c91b6048" message='#["Flow Ended- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+    </flow>
+</mule>

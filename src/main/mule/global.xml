@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule
+	xmlns:api-gateway="http://www.mulesoft.org/schema/mule/api-gateway"
+	xmlns:secure-properties="http://www.mulesoft.org/schema/mule/secure-properties"
+	xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce"
+	xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd 
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd
+http://www.mulesoft.org/schema/mule/secure-properties http://www.mulesoft.org/schema/mule/secure-properties/current/mule-secure-properties.xsd
+http://www.mulesoft.org/schema/mule/api-gateway http://www.mulesoft.org/schema/mule/api-gateway/current/mule-api-gateway.xsd">
+
+	<http:listener-config
+		name="micorp-order-mng-sf-sys-api-httpListenerConfig">
+		<http:listener-connection
+			host="${http.listener.host}" port="${http.listener.port}" />
+	</http:listener-config>
+	<apikit:config name="micorp-order-mng-sf-sys-api-config"
+		api="resource::ce235d46-115c-497c-b0e2-474afd80f5e9:micorp-order-mng-sf-sys-api:1.0.2:raml:zip:micorp-order-mng-sf-sys-api.raml"
+		outboundHeadersMapName="outboundHeaders"
+		httpStatusVarName="httpStatus" />
+	<configuration-properties
+		doc:name="Configuration properties"
+		doc:id="22ab9915-eea0-4169-823d-1107b6f38916"
+		file="properties/${env}-config.yaml" />
+	<global-property doc:name="Global Property"
+		doc:id="3ce2e9a2-5750-42be-8113-fd3bf240e451" name="env" value="dev" />
+	<secure-properties:config
+		name="Secure_Properties_Config" doc:name="Secure Properties Config"
+		doc:id="49693529-0b2f-43ff-a636-576d6a0a29a3"
+		file="properties\secure-dev-config.yaml" key="Secure@123">
+		<secure-properties:encrypt
+			algorithm="Blowfish" />
+	</secure-properties:config>
+	<salesforce:sfdc-config
+		name="Salesforce_Config1" doc:name="Salesforce Config"
+		doc:id="a6404526-24cf-43c2-9e6a-5601206b2ba5">
+		<salesforce:basic-connection
+			username="${secure::sfdc.username}"
+			password="${secure::sfdc.password}"
+			securityToken="${secure::sfdc.token}" />
+	</salesforce:sfdc-config>
+	<!-- <api-gateway:autodiscovery apiId="18313062"
+		ignoreBasePath="true" doc:name="API Autodiscovery"
+		doc:id="7b219c93-f2cf-4786-a172-72d7a19e54e1"
+		flowRef="micorp-order-mng-sf-sys-api-main" />
+ -->
+</mule>

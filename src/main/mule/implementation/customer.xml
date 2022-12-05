@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<flow name="getCustomer" doc:id="faedd6f6-d8ea-4438-b6bd-a8c4621f59c3" >
+		<logger level="INFO" doc:name="flowStarted" doc:id="0e95d7bc-6932-4ced-ad2e-886f017f3cb9" message='#["Flow Started- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+		<set-variable value="#[attributes.queryParams.orderId default '']" doc:name="orderId" doc:id="4b6f34db-9ecf-4e28-9b84-bc8d02e96a91" variableName="orderId" doc:description="This will set the varible orderId."/>
+		<salesforce:query doc:name="customeDetails" doc:id="341fed69-e1de-429a-b466-8595afa27cae" config-ref="Salesforce_Config1" doc:description="This will get the data from salesforce object customer.">
+			<salesforce:salesforce-query ><![CDATA[select fields(custom)
+from CUstomer__c where ORder__c=':orderId' LIMIT 200]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	orderId : vars.orderId
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Payload" doc:id="dd0457f1-6c10-4148-8f6f-f389b91d2bf0" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="flowEnded" doc:id="5caa112c-6e26-47a0-8d7c-993f6ea21f51" message='#["Flow ended- " ++ flow.name]' doc:description="This will show the name of ending flow."/>
+	</flow>
+	<flow name="addCustomer" doc:id="12211a57-aff7-4252-8b31-b8f504b10dae" >
+		<logger level="INFO" doc:name="flowStarted" doc:id="a2ec153e-6936-4de7-9e2b-77f7065d4bcb" message='#["Flow Started- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+		<ee:transform doc:name="custome Details" doc:id="5b19fbb4-4a68-472e-857e-329dfd47605f" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[
+output application/java
+---
+[{
+	firstName__c: payload.firstName,
+    lastName__c: payload.lastName,
+    address__c: payload.address,
+    ORder__c: payload.orderId
+
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create type="CUstomer__c" doc:name="CUstomer__c" doc:id="1d8c0189-d503-4e1d-bf13-748082a75347" config-ref="Salesforce_Config1" doc:description="This will create the record in saleforce object customer."/>
+		<ee:transform doc:name="Payload" doc:id="5893fc80-ab5c-4ecd-93ac-7a30c995d9fd">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="flowEnded" doc:id="c0318703-a196-4e5d-a32b-f4427f466588" message='#["Flow ended- " ++ flow.name]' doc:description="This will show the name of ending flow."/>
+	</flow>
+</mule>

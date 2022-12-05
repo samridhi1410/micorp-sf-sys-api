@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:munit-tools="http://www.mulesoft.org/schema/mule/munit-tools"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xsi:schemaLocation="
+		http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+		http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+		http://www.mulesoft.org/schema/mule/munit-tools  http://www.mulesoft.org/schema/mule/munit-tools/current/mule-munit-tools.xsd">
+	<munit:config name="micorp-order-mng-sf-sys-api-test-suite.xml" />
+	<munit:test name="APIKIT:NOT_FOUND" doc:id="8c1bd8e8-591f-44a9-b3e6-6c685a762e2e" description="Test" expectedErrorType="APIKIT:NOT_FOUND">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="29acfdf1-be49-4d7f-9965-87673f04eb61" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="micorp-order-mng-sf-sys-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_FOUND" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to micorp-order-mng-sf-sys-api-main" doc:id="f3dd8c9f-2159-4376-8f32-d6d3ac517c0b" name="micorp-order-mng-sf-sys-api-main"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="APIKIT:NOT_ACCEPTABLE" doc:id="ca5322f4-be5c-4970-a854-f40a43243068" description="Test" expectedErrorType="APIKIT:NOT_ACCEPTABLE">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="fe568686-da3f-4fc5-886f-8b8850483dab" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="micorp-order-mng-sf-sys-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_ACCEPTABLE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to micorp-order-mng-sf-sys-api-main" doc:id="aefb14ad-6092-4b59-bd8e-deb2ca7774d7" name="micorp-order-mng-sf-sys-api-main"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="APIKIT:BAD_REQUEST" doc:id="b4e46c75-9fcc-48af-bd8a-3f94ceabee40" description="Test" expectedErrorType="APIKIT:BAD_REQUEST" >
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e2934a92-eed9-4209-9777-10dbbbc4121b" processor="apikit:router" >
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="micorp-order-mng-sf-prc-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:BAD_REQUEST" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to micorp-order-mng-sf-prc-api-main" doc:id="465b59b9-022f-4bae-8c1c-3b386ab65f8e" name="micorp-order-mng-sf-sys-api-main" />
+		</munit:execution>
+	</munit:test>
+	<munit:test name="APIKIT:UNSUPPORTED_MEDIA_TYPE" doc:id="6022f345-4979-4c1f-ae03-ce4ae87d2374" description="Test" expectedErrorType="APIKIT:UNSUPPORTED_MEDIA_TYPE">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="0bbc4dfe-aa22-40d9-87a4-68b2f39f8ad7" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="micorp-order-mng-sf-sys-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:UNSUPPORTED_MEDIA_TYPE" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to micorp-order-mng-sf-sys-api-main" doc:id="8acfe621-aeb7-49ca-92e2-d96ef45533d4" name="micorp-order-mng-sf-sys-api-main"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="APIKIT:NOT_IMPLEMENTED" doc:id="3a411232-c9c3-42d1-b341-2452c5268be5" description="Test" expectedErrorType="APIKIT:NOT_IMPLEMENTED">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="e3201d13-7411-4150-8f8c-c8cd3223d33b" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="micorp-order-mng-sf-sys-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="APIKIT:NOT_IMPLEMENTED" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to micorp-order-mng-sf-sys-api-main" doc:id="f33c82ed-dfb4-4e5d-b0c3-34a2989c5e20" name="micorp-order-mng-sf-sys-api-main"/>
+		</munit:execution>
+	</munit:test>
+	<munit:test name="ANY" doc:id="94d74812-486f-4ae0-ac6f-5bf27f0661e1" description="Test" expectedErrorType="ANY">
+		<munit:behavior >
+			<munit-tools:mock-when doc:name="Mock when" doc:id="0aa29a65-bedc-4fe0-be50-2c593a458af8" processor="apikit:router">
+				<munit-tools:with-attributes >
+					<munit-tools:with-attribute whereValue="micorp-order-mng-sf-sys-api-config" attributeName="config-ref" />
+				</munit-tools:with-attributes>
+				<munit-tools:then-return >
+					<munit-tools:error typeId="ANY" />
+				</munit-tools:then-return>
+			</munit-tools:mock-when>
+		</munit:behavior>
+		<munit:execution >
+			<flow-ref doc:name="Flow-ref to micorp-order-mng-sf-sys-api-main" doc:id="8fecb249-8f91-41f1-a1c1-e72f5ab7284e" name="micorp-order-mng-sf-sys-api-main"/>
+		</munit:execution>
+	</munit:test>
+
+
+</mule>

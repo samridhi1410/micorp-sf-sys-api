@@ -1,0 +1,10 @@
+%dw 2.0
+
+type auto_12211a57_aff7_4252_8b31_b8f504b10dae_Input_Payload = {
+  firstName: String, 
+  lastName: String, 
+  address: String, 
+  orderId: String, 
+  _?: Any
+}
+

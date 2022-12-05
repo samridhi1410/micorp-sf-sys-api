@@ -1,0 +1,100 @@
+<!-- [STUDIO:"Choice"]<?xml version="1.0" encoding="UTF-8"?> [STUDIO] -->
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<flow name="getOrder" doc:id="20007154-9108-47d0-a74d-93eafd5fa853" >
+		<logger level="INFO" doc:name="flowStarted" doc:id="3571cd7d-237c-432e-9593-c27a75920309" message='#["Flow Started- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+		<set-variable value="#[attributes.queryParams.poNumber default '']" doc:name="poNumber" doc:id="6be6972d-e8c9-40b1-8e3f-f95062aebe97" variableName="poNumber" doc:description="This will set the varible poNumber"/>
+		<salesforce:query doc:name="orderDetails" doc:id="7b6cf287-ac7a-4b21-bc64-faf443471092" config-ref="Salesforce_Config1" doc:description="This will get the data from salesforce object order.">
+			<salesforce:salesforce-query ><![CDATA[select fields(all)
+from ORder__c where poNumber__c=:poNumber limit 200]]></salesforce:salesforce-query>
+			<salesforce:parameters ><![CDATA[#[output application/java
+---
+{
+	poNumber : vars.poNumber
+}]]]></salesforce:parameters>
+		</salesforce:query>
+		<ee:transform doc:name="Payload" doc:id="8f56543a-fd02-4872-8699-eed67b2e6567" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="flowEnded" doc:id="4a42a33a-f0ae-4155-905d-db70494c16eb" message='#["Flow Ended- " ++ flow.name]' doc:description="This will show the name of ending flow."/>
+	</flow>
+	<flow name="addOrder" doc:id="a70650f7-b431-421c-abc7-c1d96d860852" >
+		<logger level="INFO" doc:name="flowStarted" doc:id="234db159-93c4-44eb-9b98-829bd67959e1" message='#["Flow Started- " ++ flow.name]' doc:description="This will show the name of starting flow."/>
+		<ee:transform doc:name="orderDetails" doc:id="bf1abc38-f97c-482a-aa9a-854b13a24329" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+[{
+poNumber__c:payload.poNumber,
+giftWrapFlag__c:payload.giftWrapFlag,
+signatureRequiredFlag__c: payload.signatureRequiredFlag,
+shipInstructions__c: payload.shipInstructions,
+giftWrap__c: payload.giftWrapMessage,
+CurrencyCode__c: payload.currencyCode,
+subTotal__c: payload.subTotal,
+email__c: payload.email
+
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create type="ORder__c" doc:name="ORder__c" doc:id="141efb8b-5fec-46ae-9ab5-db130ba9ab85" config-ref="Salesforce_Config1" doc:description="This will create the record in saleforce object order."/>
+		<choice doc:name="Choice" doc:id="b623b0dc-c096-4187-be0d-de6d134406ee" >
+			<when expression="#[payload.successful == true]">
+				<ee:transform doc:name="success" doc:id="4d5f6ed8-f350-4c87-9ffa-626a8bf5f786" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "Order has been successfully created",
+	"orderId": payload.items.id joinBy ""
+	
+}]]></ee:set-payload>
+					</ee:message>
+				</ee:transform>
+				<logger level="INFO" doc:name="response" doc:id="a8009328-e507-48ba-a8b1-a94e81dafa7e" message="#[payload]"/>
+			</when>
+			<otherwise >
+				<ee:transform doc:name="failed" doc:id="67eb017b-cec7-4520-b67e-2393bbb11312" >
+					<ee:message >
+						<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"message": "Order has been failed",
+	"reason": payload.items.statusCode joinBy ""
+}]]></ee:set-payload>
+					</ee:message>
+					<ee:variables >
+						<ee:set-variable variableName="httpStatus" ><![CDATA[406]]></ee:set-variable>
+					</ee:variables>
+				
+</ee:transform>
+				<raise-error doc:name="Raise error" doc:id="976699ec-a486-4a04-8fad-1d4f7236d778" type="ANY"/>
+			
+</otherwise>
+		</choice>
+		<ee:transform doc:name="Payload" doc:id="d6487138-32cd-47fd-866c-b06d3a6b7be2">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+
+payload
+
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<logger level="INFO" doc:name="flowEnded" doc:id="3b5e804d-99ca-46a7-b38c-8d9fe256f37c" message='#["Flow Ended- " ++ flow.name]' doc:description="This will show the name of ending flow."/>
+	</flow>
+</mule>
